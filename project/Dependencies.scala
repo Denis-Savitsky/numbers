@@ -18,7 +18,10 @@ object Dependencies {
     "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui" % V.tapir,
   )
 
-  val zio = Seq("dev.zio" %% "zio" % V.zio)
+  val zio = Seq(
+    "dev.zio" %% "zio" % V.zio,
+    "io.github.kitlangton" %% "zio-magic" % "0.3.8"
+  )
 
   val mouse = Seq("org.typelevel" %% "mouse" % V.mouse)
 
@@ -28,6 +31,13 @@ object Dependencies {
   )
 
   val slf4j = Seq("org.slf4j" % "slf4j-api" % "1.7.32")
+
+  val quill = Seq(
+    "org.postgresql" % "postgresql" % "42.2.24",
+    "io.getquill" %% "quill-jdbc-zio" % "3.10.0"
+  )
+
+  val derevo = Seq("tf.tofu" %% "derevo-circe" % "0.12.6")
 
   val core =
     zio ++

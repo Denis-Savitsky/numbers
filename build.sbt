@@ -6,7 +6,9 @@ lazy val db = (project in file("BDModule"))
     Settings.common
   )
   .settings(
-    libraryDependencies ++= Dependencies.core
+    libraryDependencies ++= Dependencies.core,
+    libraryDependencies ++= Dependencies.quill,
+    libraryDependencies ++= Dependencies.derevo
     )
 
 lazy val gateway = (project in file("gateway"))
