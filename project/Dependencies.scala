@@ -20,7 +20,17 @@ object Dependencies {
 
   val zio = Seq(
     "dev.zio" %% "zio" % V.zio,
-    "io.github.kitlangton" %% "zio-magic" % "0.3.8"
+    "io.github.kitlangton" %% "zio-magic" % "0.3.9",
+    "dev.zio" %% "zio-config" % "1.0.10",
+    "dev.zio" %% "zio-config-magnolia" % "1.0.10",
+    "dev.zio" %% "zio-config-typesafe" % "1.0.10",
+    "dev.zio" %% "zio-config-refined" % "1.0.10"
+  )
+
+  val `zio-test` = Seq(
+    "dev.zio" %% "zio-test" % V.zio % Test,
+    "dev.zio" %% "zio-test-sbt" % V.zio % Test,
+    "dev.zio" %% "zio-test-magnolia" % V.zio % Test
   )
 
   val mouse = Seq("org.typelevel" %% "mouse" % V.mouse)
@@ -38,6 +48,8 @@ object Dependencies {
   )
 
   val derevo = Seq("tf.tofu" %% "derevo-circe" % "0.12.6")
+
+  val config = Seq("com.typesafe" % "config" % "1.4.1")
 
   val core =
     zio ++

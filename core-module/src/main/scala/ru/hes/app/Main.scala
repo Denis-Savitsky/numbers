@@ -27,7 +27,7 @@ object Main extends zio.App {
   }
 
   val services = ZLayer.wire[Has[NumberService[Task]]](
-    DataSourceLayer.fromPrefix(""),
+    DataSourceLayer.fromPrefix("application.db"),
     AnalysisServiceImpl.live,
     NumberDaoImpl.live,
     GenerationServiceImpl.live,
