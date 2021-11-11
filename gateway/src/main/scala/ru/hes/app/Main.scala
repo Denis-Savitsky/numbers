@@ -1,26 +1,33 @@
 package ru.hes.app
 
-import cats.syntax.all._
 import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.server.Router
 import org.http4s.syntax.kleisli._
-import ru.hes.app.http.Routes.{persistenceRoutes, swaggerRoutes}
+import ru.hes.app.gateway.api.impl.AnalysisServiceImpl
+import ru.hes.app.http.Routes.routes
 import zio.blocking.Blocking
 import zio.clock.Clock
 import zio.interop.catz._
-import zio.{App, ExitCode, RIO, URIO, ZEnv, ZIO}
+import zio.{App, ExitCode, Has, RIO, URIO, ZEnv, ZIO, ZLayer}
+import zio.magic._
+
 
 object Main extends App {
 
-  val serve: ZIO[ZEnv, Throwable, Unit] =
-    ZIO.runtime[ZEnv].flatMap { implicit runtime => // This is needed to derive cats-effect instances for that are needed by http4s
-      BlazeServerBuilder[RIO[Clock with Blocking, *]](runtime.platform.executor.asEC)
+  val serve =
+    ZIO.runtime[ZEnv with Has[AnalysisProgram]].flatMap { implicit runtime =>
+      BlazeServerBuilder[RIO[Has[AnalysisProgram] with Clock with Blocking, *]](runtime.platform.executor.asEC)
         .bindHttp(8080, "localhost")
-        .withHttpApp(Router("/" -> (persistenceRoutes <+> swaggerRoutes)).orNotFound)
+        .withHttpApp(Router("/" -> routes).orNotFound)
         .serve
         .compile
         .drain
     }
 
-  override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = serve.exitCode
+  val services = ZLayer.wire[Has[AnalysisProgram]](
+    AnalysisServiceImpl.live,
+    ZEnv.live
+  )
+
+  override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = serve.provideCustomLayer(services).forever.exitCode
 }

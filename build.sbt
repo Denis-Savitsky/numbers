@@ -24,5 +24,7 @@ lazy val gateway = (project in file("gateway"))
     Settings.common
   )
   .settings(
-    libraryDependencies ++= Dependencies.core
+    libraryDependencies ++= Dependencies.core,
+    libraryDependencies ++= Dependencies.derevo,
+    libraryDependencies ++= Dependencies.httpClient
   )
