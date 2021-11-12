@@ -3,7 +3,6 @@ package ru.hes.app.http
 import derevo.circe.{decoder, encoder}
 import derevo.derive
 import io.circe.generic.auto._
-import org.http4s._
 import ru.hes.app.AnalysisProgram
 import ru.hes.app.domain.{AnalyzedNum, RawNum}
 import sttp.model.StatusCode
@@ -16,7 +15,7 @@ import sttp.tapir.swagger.SwaggerUI
 import sttp.tapir.ztapir.{ZServerEndpoint, endpoint, oneOf, oneOfMappingFromMatchType, path, _}
 import zio.blocking.Blocking
 import zio.clock.Clock
-import zio.{Has, RIO, ZIO}
+import zio.{Has, RIO}
 
 object Routes {
   @derive(encoder, decoder)
@@ -52,9 +51,11 @@ object Routes {
   val swaggerRoutes =
     ZHttp4sServerInterpreter().from(SwaggerUI[RIO[Has[AnalysisProgram] with Clock with Blocking, *]](yaml)).toRoutes
 
-  val routes: HttpRoutes[ZIO[Has[AnalysisProgram] with Has[Clock.Service] with Has[Blocking.Service], Throwable, *]] =
+  val gatewayRoutes =
     ZHttp4sServerInterpreter().from(
       List(getNumbersForPrinting, analyzeNumbers)
     ).toRoutes
-}
 
+  import zio.interop.catz._
+  val routes = gatewayRoutes <+> swaggerRoutes
+}

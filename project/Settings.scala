@@ -17,10 +17,17 @@ object Settings {
     version := "0.1",
     scalaVersion := "2.13.6",
     scalacOptions := Seq(
-      "-Ymacro-annotations",
+      "-encoding",
+      "utf8",
+      "-unchecked",
+      "-feature",
+      "-deprecation",
       "-language:higherKinds,implicitConversions",
-      "-Ywarn-unused:imports",
-      "-Xlint:stars-align"
+      "-Xlint:stars-align",
+      "-Ywarn-value-discard",
+      "-Werror",
+      "-Ymacro-annotations",
+      predef
     ),
     addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
     addCompilerPlugin(
