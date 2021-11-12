@@ -5,4 +5,4 @@ import derevo.derive
 import ru.hes.app.domain.RawNum
 
 @derive(encoder, decoder)
-case class AnalysisDTO(number: RawNum)
+case class AnalysisRequest(number: RawNum)

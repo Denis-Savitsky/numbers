@@ -2,13 +2,13 @@ package ru.hes.app.gateway.api.impl
 
 import ru.hes.app.domain.{AnalyzedNum, AnalyzedNumRaw, RawNum}
 import ru.hes.app.gateway.api
-import ru.hes.app.gateway.api.AnalysisService
-import ru.hes.app.gateway.api.dto.AnalysisDTO
+import ru.hes.app.gateway.api.AnalysisProxyService
+import ru.hes.app.gateway.api.dto.AnalysisRequest
 import sttp.client3.asynchttpclient.zio.AsyncHttpClientZioBackend
 import zio.{Has, Task, ULayer, ZLayer}
 
 
-class AnalysisServiceImpl extends AnalysisService[Task] {
+class AnalysisProxyServiceImpl extends AnalysisProxyService[Task] {
 
   import io.circe.generic.auto._
   import sttp.client3._
@@ -20,7 +20,7 @@ class AnalysisServiceImpl extends AnalysisService[Task] {
   override def getN(n: Int): Task[List[RawNum]] = {
     val request = endpoint
       .get
-      .in(("numbers" / path[Int]("howMuch")))
+      .in("numbers" / path[Int]("howMuch"))
       .errorOut(stringBody)
       .out(jsonBody[List[RawNum]])
 
@@ -43,14 +43,14 @@ class AnalysisServiceImpl extends AnalysisService[Task] {
     val request = endpoint
       .get
       .in("analyze")
-      .in(jsonBody[AnalysisDTO])
+      .in(jsonBody[AnalysisRequest])
       .errorOut(stringBody)
       .out(jsonBody[List[AnalyzedNumRaw]])
 
     val analyzeRequest: Request[DecodeResult[Either[String, List[AnalyzedNumRaw]]], Any] =
       SttpClientInterpreter()
         .toRequest(request, Some(uri"http://localhost:8080"))
-        .apply(api.dto.AnalysisDTO(extraNum))
+        .apply(api.dto.AnalysisRequest(extraNum))
 
     for {
       backend <- AsyncHttpClientZioBackend()
@@ -63,7 +63,7 @@ class AnalysisServiceImpl extends AnalysisService[Task] {
   }
 }
 
-object AnalysisServiceImpl {
-  val live: ULayer[Has[AnalysisService[Task]]] =
-    ZLayer.succeed(new AnalysisServiceImpl())
+object AnalysisProxyServiceImpl {
+  val live: ULayer[Has[AnalysisProxyService[Task]]] =
+    ZLayer.succeed(new AnalysisProxyServiceImpl())
 }
