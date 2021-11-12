@@ -16,7 +16,7 @@ import sttp.tapir.ztapir._
 import zio.{RIO, _}
 import zio.blocking.Blocking
 import zio.clock.Clock
-//import zio.interop.catz.asyncInstance
+import zio.interop.catz._
 import org.http4s.HttpRoutes
 
 package object api {
@@ -59,5 +59,5 @@ package object api {
     List(regenerate, analyze)
   ).toRoutes
 
-//  val allRoutes = routes <+> swaggerRoutes
+  val allRoutes = routes <+> swaggerRoutes
 }

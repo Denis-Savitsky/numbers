@@ -4,7 +4,7 @@ import io.getquill.context.ZioJdbc.DataSourceLayer
 import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.server.Router
 import ru.hes.app.analysis.service.AnalysisServiceImpl
-import ru.hes.app.api.routes
+import ru.hes.app.api.allRoutes
 import ru.hes.app.db.service.NumberDaoImpl
 import ru.hes.app.generation.GenerationServiceImpl
 import ru.hes.app.numberService.{NumberService, NumberServiceImpl}
@@ -19,8 +19,8 @@ object Main extends zio.App {
   val serve: ZIO[zio.ZEnv with Has[NumberService[Task]], Throwable, Unit] = ZIO.runtime[ZEnv with Has[NumberService[Task]]].flatMap {
     implicit runtime =>
       BlazeServerBuilder[RIO[Has[NumberService[Task]] with Clock with Blocking, *]](runtime.platform.executor.asEC)
-        .bindHttp(8080, "127.0.0.1")
-        .withHttpApp(Router("/" -> routes).orNotFound)
+        .bindHttp(8080, "0.0.0.0")
+        .withHttpApp(Router("/" -> allRoutes).orNotFound)
         .serve
         .compile
         .drain
