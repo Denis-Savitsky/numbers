@@ -2,8 +2,9 @@ package ru.hes.app
 
 import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.server.Router
-import ru.hes.app.gateway.api.impl.AnalysisProxyServiceImpl
 import ru.hes.app.http.Routes.routes
+import ru.hes.app.proxy.core.AnalysisProxyService
+import ru.hes.app.proxy.kmeans.KMeansProxyService
 import zio.blocking.Blocking
 import zio.clock.Clock
 import zio.interop.catz._
@@ -23,7 +24,8 @@ object Main extends App {
     }
 
   val services = ZLayer.wire[Has[AnalysisProgram]](
-    AnalysisProxyServiceImpl.live,
+    KMeansProxyService.live,
+    AnalysisProxyService.live,
     AnalysisProgram.live,
   )
 

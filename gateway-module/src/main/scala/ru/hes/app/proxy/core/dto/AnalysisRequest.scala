@@ -1,4 +1,4 @@
-package ru.hes.app.gateway.api.dto
+package ru.hes.app.proxy.core.dto
 
 import derevo.circe.{decoder, encoder}
 import derevo.derive

@@ -1,6 +1,6 @@
-package ru.hes.app.analysis.service
+package ru.hes.app.proxy.core.service
 
-import ru.hes.app.analysis.model.AnalysisResult
+import ru.hes.app.proxy.core.model.AnalysisResult
 import zio._
 import zio.test._
 import zio.test.Assertion._

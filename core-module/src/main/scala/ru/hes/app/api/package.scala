@@ -3,8 +3,8 @@ package ru.hes.app
 import derevo.circe.{decoder, encoder}
 import derevo.derive
 import io.circe.generic.decoding.DerivedDecoder.deriveDecoder
-import ru.hes.app.analysis.model.AnalysisResult
 import ru.hes.app.numberService.NumberService
+import ru.hes.app.proxy.core.model.AnalysisResult
 import sttp.model.StatusCode
 import sttp.tapir.docs.openapi.OpenAPIDocsInterpreter
 import sttp.tapir.generic.auto._
@@ -59,5 +59,6 @@ package object api {
     List(regenerate, analyze)
   ).toRoutes
 
-//  val allRoutes = routes <+> swaggerRoutes
+  import zio.interop.catz._
+  val allRoutes = routes <+> swaggerRoutes
 }

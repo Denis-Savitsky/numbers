@@ -1,4 +1,4 @@
-package ru.hes.app.analysis.model
+package ru.hes.app.proxy.core.model
 
 import derevo.circe.{decoder, encoder}
 import derevo.derive

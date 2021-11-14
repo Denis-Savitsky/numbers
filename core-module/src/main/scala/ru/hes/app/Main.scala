@@ -3,11 +3,11 @@ package ru.hes.app
 import io.getquill.context.ZioJdbc.DataSourceLayer
 import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.server.Router
-import ru.hes.app.analysis.service.AnalysisServiceImpl
-import ru.hes.app.api.routes
+import ru.hes.app.api.{allRoutes, routes}
 import ru.hes.app.db.service.NumberDaoImpl
 import ru.hes.app.generation.GenerationServiceImpl
 import ru.hes.app.numberService.{NumberService, NumberServiceImpl}
+import ru.hes.app.proxy.core.service.AnalysisServiceImpl
 import zio._
 import zio.blocking.Blocking
 import zio.clock.Clock
@@ -20,7 +20,7 @@ object Main extends zio.App {
     implicit runtime =>
       BlazeServerBuilder[RIO[Has[NumberService[Task]] with Clock with Blocking, *]](runtime.platform.executor.asEC)
         .bindHttp(8080, "127.0.0.1")
-        .withHttpApp(Router("/" -> routes).orNotFound)
+        .withHttpApp(Router("/" -> allRoutes).orNotFound)
         .serve
         .compile
         .drain

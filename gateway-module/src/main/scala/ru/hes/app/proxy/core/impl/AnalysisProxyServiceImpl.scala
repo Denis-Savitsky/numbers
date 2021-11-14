@@ -1,22 +1,19 @@
-package ru.hes.app.gateway.api.impl
+package ru.hes.app.proxy.core.impl
 
-import ru.hes.app.domain.{AnalyzedNum, AnalyzedNumRaw, RawNum}
-import ru.hes.app.gateway.api
-import ru.hes.app.gateway.api.AnalysisProxyService
-import ru.hes.app.gateway.api.dto.AnalysisRequest
+import io.circe.generic.auto._
+import ru.hes.app.domain.{AnalyzedNumWithoutExtra, RawNum}
+import ru.hes.app.proxy.core.dto.AnalysisRequest
+import ru.hes.app.proxy.core.{AnalysisProxyService, dto}
+import sttp.client3._
 import sttp.client3.asynchttpclient.zio.AsyncHttpClientZioBackend
-import zio.{Has, Task, ULayer, ZLayer}
+import sttp.tapir._
+import sttp.tapir.client.sttp.SttpClientInterpreter
+import sttp.tapir.generic.auto._
+import sttp.tapir.json.circe._
+import zio.Task
 
 
 class AnalysisProxyServiceImpl extends AnalysisProxyService[Task] {
-
-  import io.circe.generic.auto._
-  import sttp.client3._
-  import sttp.tapir._
-  import sttp.tapir.client.sttp.SttpClientInterpreter
-  import sttp.tapir.generic.auto._
-  import sttp.tapir.json.circe._
-
   override def getN(n: Int): Task[List[RawNum]] = {
     val request = endpoint
       .get
@@ -39,31 +36,28 @@ class AnalysisProxyServiceImpl extends AnalysisProxyService[Task] {
     } yield numbers
   }
 
-  override def analyzeNum(extraNum: RawNum): Task[List[AnalyzedNum]] = {
+  override def analyzeNum(extraNum: RawNum): Task[List[AnalyzedNumWithoutExtra]] = {
     val request = endpoint
       .get
       .in("analyze")
       .in(jsonBody[AnalysisRequest])
       .errorOut(stringBody)
-      .out(jsonBody[List[AnalyzedNumRaw]])
+      .out(jsonBody[List[AnalyzedNumWithoutExtra]])
 
-    val analyzeRequest: Request[DecodeResult[Either[String, List[AnalyzedNumRaw]]], Any] =
+    val analyzeRequest: Request[DecodeResult[Either[String, List[AnalyzedNumWithoutExtra]]], Any] =
       SttpClientInterpreter()
         .toRequest(request, Some(uri"http://localhost:8080"))
-        .apply(api.dto.AnalysisRequest(extraNum))
+        .apply(dto.AnalysisRequest(extraNum))
 
     for {
       backend <- AsyncHttpClientZioBackend()
       response <- backend.send(analyzeRequest)
       numbers = response.body match {
-        case DecodeResult.Value(Right(numbers)) => numbers.map(num => AnalyzedNum(extraNum.value, num.num, num.n, num.p))
+        case DecodeResult.Value(Right(numbers)) => numbers.map(num => AnalyzedNumWithoutExtra(num.num, num.n, num.p))
         case _ => List.empty
       }
     } yield numbers
   }
 }
 
-object AnalysisProxyServiceImpl {
-  val live: ULayer[Has[AnalysisProxyService[Task]]] =
-    ZLayer.succeed(new AnalysisProxyServiceImpl())
-}
+
