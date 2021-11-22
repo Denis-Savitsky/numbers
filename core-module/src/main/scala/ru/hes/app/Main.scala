@@ -8,6 +8,7 @@ import ru.hes.app.api.allRoutes
 import ru.hes.app.db.service.NumberDaoImpl
 import ru.hes.app.generation.GenerationServiceImpl
 import ru.hes.app.numberService.{NumberService, NumberServiceImpl}
+import ru.hes.app.proxy.core.service.AnalysisServiceImpl
 import zio._
 import zio.blocking.Blocking
 import zio.clock.Clock

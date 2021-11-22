@@ -7,6 +7,7 @@ object Dependencies {
     val zio = "1.0.12"
     val mouse = "1.0.6"
     val logback = "1.2.6"
+    val zioHttpClient = "3.3.16"
   }
 
   val tapir = Seq("com.softwaremill.sttp.tapir" %% "tapir-zio" % V.tapir,
@@ -15,8 +16,11 @@ object Dependencies {
   val `tapir-swagger` = Seq(
     "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs" % V.tapir,
     "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml" % V.tapir,
-    "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui" % V.tapir,
+    "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui" % V.tapir
   )
+  val `tapir-client` = Seq("com.softwaremill.sttp.tapir" %% "tapir-sttp-client" % V.tapir)
+
+  val `zio-http-client` = Seq("com.softwaremill.sttp.client3" %% "async-http-client-backend-zio" % V.zioHttpClient)
 
   val zio = Seq(
     "dev.zio" %% "zio" % V.zio,
@@ -60,5 +64,5 @@ object Dependencies {
       logback ++
       slf4j
 
-
+  val httpClient = `tapir-client` ++ `zio-http-client`
 }

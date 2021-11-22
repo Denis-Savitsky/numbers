@@ -1,10 +1,10 @@
 package ru.hes.app.numberService
 
 import mouse.all.booleanSyntaxMouse
-import ru.hes.app.analysis.model.AnalysisResult
-import ru.hes.app.analysis.service.AnalysisService
 import ru.hes.app.db.service.NumberDao
 import ru.hes.app.generation.GenerationService
+import ru.hes.app.proxy.core.model.AnalysisResult
+import ru.hes.app.proxy.core.service.AnalysisService
 import zio._
 
 trait NumberService[F[_]] {
